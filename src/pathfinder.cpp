@@ -1,6 +1,8 @@
 #include <iostream>
 #include <climits>
 
+using namespace std;
+
 class Position {
   public:
     int x;
@@ -25,13 +27,13 @@ class Path {
       distance = d;
     }
     void print () {
-      std::cout << "Starting Position: [" << start.x << ", " << start.y << "]" << std::endl;
-      std::cout << "Goal: [" << goal.x << ", " << goal.y << "]" << std::endl;
+      cout << "Starting Position: [" << start.x << ", " << start.y << "]" << endl;
+      cout << "Goal: [" << goal.x << ", " << goal.y << "]" << endl;
 
-      if (!possible) std::cout << "Goal is unreachable!" << std::endl;
+      if (!possible) cout << "Goal is unreachable!" << endl;
       else {
-        std::cout << "Distance: " << distance << std::endl;
-        std::cout << "Suggested Move: [" << move.x << ", " << move.y << "]" << std::endl;
+        cout << "Distance: " << distance << endl;
+        cout << "Suggested Move: [" << move.x << ", " << move.y << "]" << endl;
       }
     }
 };
@@ -39,13 +41,13 @@ class Path {
 void printMap (char map[][6], Position start, Position goal) {
   for (int i = 0; i < 6; i++) {
     for (int j = 0; j < 6; j++) {
-      if (start.y == i && start.x == j) std::cout << '$';
-      else if (goal.y == i && goal.x == j) std::cout << 'X';
-      else std::cout << map[i][j];
+      if (start.y == i && start.x == j) cout << '$';
+      else if (goal.y == i && goal.x == j) cout << 'X';
+      else cout << map[i][j];
     }
-    std::cout << std::endl;
+    cout << endl;
   }
-  std::cout << std::endl;
+  cout << endl;
 }
 
 
