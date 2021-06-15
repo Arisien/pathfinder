@@ -1,5 +1,7 @@
 #include <iostream>
 #include <climits>
+#include <cstdlib>
+#include <ctime>
 #include <vector>
 #include <string>
 
@@ -19,6 +21,10 @@ class Position {
     }
     string toString () {
       return "[" + to_string(x) + ", " + to_string(y) + "]";
+    }
+    bool matches (int a, int b) {
+      if (x == a && y == b) return true;
+      return false;
     }
 };
 
@@ -50,8 +56,8 @@ class Path {
       for (int i = 0; i < levels.size(); i++) {
         for (int j = 0; j < levels[i].size(); j++) {
           if (levels[i][j] == -1) cout << "# ";
-          else if (start.x == j && start.y == i) cout << "$ ";
-          else if (goal.x == j && goal.y == i) cout << "X ";
+          else if (start.matches(j,i)) cout << "$ ";
+          else if (goal.matches(j,i)) cout << "X ";
           else {
             bool isPath = false;
             if (possible) {
@@ -147,7 +153,27 @@ Path* pathfinder (vector<vector<char>> map, Position start, Position goal) {
   else return new Path(start, goal, levels, possible, distance);
 }
 
+vector<vector<char>> generateMap (int height, int width, Position start, Position goal) {
+  int p = 30;
+
+  vector<vector<char>> map = vector<vector<char>>(height);
+
+  for (int i = 0; i < height; i++) {
+    map[i] = vector<char>(width);
+    for (int j = 0; j < width; j++) {
+      char c = ' ';
+      if (rand() % 100 < p && !start.matches(j,i) && !goal.matches(j,i)) c = '#';
+      map[i][j] = c;
+    }
+  }
+
+  return map;
+}
+
+
 int main (int argc, char *argv[]) {
+
+  srand(time(NULL));
 
   Position start, goal;
 
@@ -160,14 +186,19 @@ int main (int argc, char *argv[]) {
     goal = Position(3, 5);
   }
 
-  vector<vector<char>> map = {
-    {' ', ' ', ' ', ' ', '#', ' '},
-    {' ', '#', '#', ' ', '#', ' '},
-    {' ', '#', ' ', ' ', ' ', ' '},
-    {' ', ' ', ' ', '#', '#', '#'},
-    {'#', ' ', '#', ' ', '#', ' '},
-    {' ', ' ', ' ', ' ', ' ', '#'}
-  };
+  vector<vector<char>> map = generateMap(8,8, start, goal);
+
+  // vector<vector<char>> map = {
+  //   {' ', ' ', ' ', ' ', '#', ' '},
+  //   {' ', '#', '#', ' ', '#', ' '},
+  //   {' ', '#', ' ', ' ', ' ', ' '},
+  //   {' ', ' ', ' ', '#', '#', '#'},
+  //   {'#', ' ', '#', ' ', '#', ' '},
+  //   {'#', ' ', ' ', ' ', '#', '#'},
+  //   {' ', '#', ' ', ' ', ' ', ' '},
+  //   {' ', '#', ' ', '#', ' ', ' '},
+  //   {' ', ' ', ' ', ' ', '#', ' '}
+  // };
 
   Path path = *pathfinder(map, start, goal);
 
