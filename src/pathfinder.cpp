@@ -1,5 +1,7 @@
 #include <iostream>
 #include <climits>
+#include <vector>
+#include <string>
 
 using namespace std;
 
@@ -7,9 +9,16 @@ class Position {
   public:
     int x;
     int y;
+    Position () {
+      x = 0;
+      y = 0;
+    }
     Position (int a, int b)  {
       x = a;
       y = b;
+    }
+    string toString () {
+      return "[" + to_string(x) + ", " + to_string(y) + "]";
     }
 };
 
@@ -17,55 +26,85 @@ class Path {
   public:
     Position start;
     Position goal;
-    Position move;
+    vector<Position> moves;
+    vector<vector<int>> levels;
     bool possible;
     int distance;
-    Path (Position s, Position g, Position m, bool p, int d): start {s}, goal {g}, move{m} {
+    Path (Position s, Position g, vector<Position> m, vector<vector<int>> l, bool p, int d): start {s}, goal {g}, moves{m}, levels{l} {
       start = s;
       goal = g;
       possible = p;
       distance = d;
+      levels = l;
+      moves = m;
+    }
+    Path (Position s, Position g, vector<vector<int>> l, bool p, int d): start {s}, goal {g}, levels{l} {
+      start = s;
+      goal = g;
+      possible = p;
+      distance = d;
+      levels = l;
+      moves = vector<Position>(0);
     }
     void print () {
-      cout << "Starting Position: [" << start.x << ", " << start.y << "]" << endl;
-      cout << "Goal: [" << goal.x << ", " << goal.y << "]" << endl;
+      for (int i = 0; i < levels.size(); i++) {
+        for (int j = 0; j < levels[i].size(); j++) {
+          if (levels[i][j] == -1) cout << "# ";
+          else if (start.x == j && start.y == i) cout << "$ ";
+          else if (goal.x == j && goal.y == i) cout << "X ";
+          else {
+            bool isPath = false;
+            if (possible) {
+              for (int k = 0; k < moves.size(); k++) {
+                if (moves[k].x == j && moves[k].y == i) {
+                  isPath = true;
+                  cout << (k+1)%10 << " ";
+                  break;
+                }
+              }
+            }
+            if (!isPath) cout << ". ";
+          }
+        }
+        cout << endl;
+      }
+      cout << endl;
+
+      cout << "Starting Position: " << start.toString() << endl;
+      cout << "Goal: " << goal.toString() << endl;
 
       if (!possible) cout << "Goal is unreachable!" << endl;
       else {
         cout << "Distance: " << distance << endl;
-        cout << "Suggested Move: [" << move.x << ", " << move.y << "]" << endl;
+        cout << "Suggested Move: ";
+        if (moves[0].x > start.x) cout << "Right";
+        else if (moves[0].x < start.x) cout << "Left";
+        else if (moves[0].y > start.y) cout << "Down";
+        else cout << "Up";
+        cout << endl;
       }
     }
 };
 
-void printMap (char map[][6], Position start, Position goal) {
-  for (int i = 0; i < 6; i++) {
-    for (int j = 0; j < 6; j++) {
-      if (start.y == i && start.x == j) cout << '$';
-      else if (goal.y == i && goal.x == j) cout << 'X';
-      else cout << map[i][j];
-    }
-    cout << endl;
-  }
-  cout << endl;
-}
-
-
-void pathfind (int levels[][6], int x, int y, int value) {
+void pathfind (vector<vector<int>> &levels, int x, int y, int value) {
   levels[y][x] = value;
 
-  if (y < 5 && levels[y+1][x] > levels[y][x] + 1) pathfind(levels, x, y+1, levels[y][x]+1);
-  if (y > 0 && levels[y-1][x] > levels[y][x] + 1) pathfind(levels, x, y-1, levels[y][x]+1);
-  if (x < 5 && levels[y][x+1] > levels[y][x] + 1) pathfind(levels, x+1, y, levels[y][x]+1);
-  if (x > 0 && levels[y][x-1] > levels[y][x] + 1) pathfind(levels, x-1, y, levels[y][x]+1);
+  if (y < levels.size() - 1 && levels[y+1][x] > value + 1) pathfind(levels, x, y+1, value+1);
+  if (y > 0 && levels[y-1][x] > value + 1) pathfind(levels, x, y-1, value+1);
+  if (x < levels[y].size() - 1 && levels[y][x+1] > value + 1) pathfind(levels, x+1, y, value+1);
+  if (x > 0 && levels[y][x-1] > value + 1) pathfind(levels, x-1, y, value+1);
+
 }
 
-Path* pathfinder (char map[][6], Position start, Position goal) {
+Path* pathfinder (vector<vector<char>> map, Position start, Position goal) {
 
-  int levels[6][6];
+  vector<vector<int>> levels(map.size());
 
-  for (int i = 0; i < 6; i++) {
-    for (int j = 0; j < 6; j++) {
+  for (int i = 0; i < map.size(); i++) {
+
+    levels[i] = vector<int>(map[i].size());
+
+    for (int j = 0; j < map[i].size(); j++) {
       if (map[i][j] == '#') levels[i][j] = -1;
       else levels[i][j] = INT_MAX;
     }
@@ -79,28 +118,49 @@ Path* pathfinder (char map[][6], Position start, Position goal) {
   int distance = levels[y][x];
   bool possible = true;
 
-  if (distance == -1 || distance == INT_MAX) possible = false;
-
-  int temp = distance;
-
-  while (possible && distance > 1) {
-    if (x < 5 && levels[y][x+1] == distance-1) x++;
-    else if (x > 0 && levels[y][x-1] == distance-1) x--;
-    else if (y < 5 && levels[y+1][x] == distance-1) y++;
-    else if (y > 0 && levels[y-1][x] == distance-1) y--;
-    else break;
-    distance--;
+  if (distance == -1 || distance == INT_MAX) {
+    possible = false;
+    distance = 0;
   }
 
-  distance = temp;
 
-  Position move = *(new Position(x,y));
+  if (possible) {
+    int temp = distance;
 
-  return new Path(start, goal, move, possible, distance);
+    vector<Position> moves(distance-1);
+
+    while (distance > 1) {
+      if (x < levels[y].size() - 1 && levels[y][x+1] == distance-1) x++;
+      else if (x > 0 && levels[y][x-1] == distance-1) x--;
+      else if (y < levels.size() - 1 && levels[y+1][x] == distance-1) y++;
+      else if (y > 0 && levels[y-1][x] == distance-1) y--;
+      else break;
+      distance--;
+      moves[distance-1] = Position(x,y);
+    }
+
+    distance = temp;
+
+    return new Path(start, goal, moves, levels, possible, distance);
+  }
+
+  else return new Path(start, goal, levels, possible, distance);
 }
 
-int main (void) {
-  char map [6][6] = {
+int main (int argc, char *argv[]) {
+
+  Position start, goal;
+
+  if (argc == 5) {
+    start = Position(stoi(argv[1]), stoi(argv[2]));
+    goal = Position(stoi(argv[3]), stoi(argv[4]));
+  }
+  else {
+    start = Position(0, 0);
+    goal = Position(3, 5);
+  }
+
+  vector<vector<char>> map = {
     {' ', ' ', ' ', ' ', '#', ' '},
     {' ', '#', '#', ' ', '#', ' '},
     {' ', '#', ' ', ' ', ' ', ' '},
@@ -109,9 +169,7 @@ int main (void) {
     {' ', ' ', ' ', ' ', ' ', '#'}
   };
 
-  Path path = *pathfinder(map, Position(0,0), Position(3,4));
-
-  printMap(map, path.start, path.goal);
+  Path path = *pathfinder(map, start, goal);
 
   path.print();
 
