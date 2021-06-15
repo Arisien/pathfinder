@@ -82,10 +82,11 @@ Path* pathfinder (char map[][6], Position start, Position goal) {
   int temp = distance;
 
   while (possible && distance > 1) {
-    if (x < 5 && levels[x+1][y] == distance-1) x++;
-    if (x > 0 && levels[x-1][y] == distance-1) x--;
-    if (y < 5 && levels[x][y+1] == distance-1) y++;
-    if (y > 0 && levels[x][y-1] == distance-1) y--;
+    if (x < 5 && levels[y][x+1] == distance-1) x++;
+    else if (x > 0 && levels[y][x-1] == distance-1) x--;
+    else if (y < 5 && levels[y+1][x] == distance-1) y++;
+    else if (y > 0 && levels[y-1][x] == distance-1) y--;
+    else break;
     distance--;
   }
 
