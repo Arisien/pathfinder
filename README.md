@@ -45,6 +45,23 @@ Suggested Move: Right
 
 The map is drawn with $ being the starting position and X being the goal. The information about the path below is printed to console when path.print() is called.
 
+## Documentation
+
+* `Path* pathfinder (std::vector<std::vector<char>> map, Position start, Position goal)`
+
+This is the pathfinding function which requires the map, as well as starting and goal positions. It calls on the recursive pathfind() function to create a depth map of how far away each tile is from the starting position and then backtracks to find the ideal path from start to finish. It will return a Path object containing all relevant data.
+
+* `std::vector<std::vector<char>> generateMap (int height, int width, Position start, Position goal)`
+
+Pass the width, height, starting position, and goal position. The function will return a randomly generated map where the start and goal positions are not walls.
+
+* `class Position`
+
+Position is a class used to represent a 2D position in the vector. It has 2 integer instance variable x and y. The toString() function may be called to display a position in the following format: [X, Y].
+
+* `class Path`
+
+Path is a class containing information of a pathfinding attempt. `path.possible` is a boolean which states whether or not the goal can be reached or if it is blocked by walls. `path.start` and `path.goal` are the starting and goal positions of the pathfinding attempt. `path.distance` is and integer which stores how far away the goal is from the starting position. `path.moves` contains a vector of positions in order to reach the goal position. `path.levels` contains a 2D integer vector with depths of how far away each point is from starting position. Unreachable points are assigned with the maximum integer limit, while walls are assigned -1. `path.print()` prints the information about the path to the console.
 
 ## Building
 
