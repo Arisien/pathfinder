@@ -12,18 +12,17 @@ The path to your goal destination can be found by calling the pathfinder functio
 #include "pathfinder.hpp"
 
 int main (void) {
-  Position start = Position(0,0);
-  Position goal = Position(5,6);
+  Pathfinder::Position start = Pathfinder::Position(0,0);
+  Pathfinder::Position goal = Pathfinder::Position(5,6);
 
-  vector<vector<char>> map = generateMap(8,8, start, goal);
+  std::vector<std::vector<char>> map = Pathfinder::generateMap(8,8, start, goal);
 
-  Path path = *pathfinder(map, start, goal);
+  Pathfinder::Path path = *Pathfinder::pathfinder(map, start, goal);
 
   path.print();
 
   return 0;
 }
-
 ```
 
 The Path objects contains information about the pathfinding attempt. It has the inputed starting and goal positions, whether or not the goal is reachable, the length of the path (labeled distance), and a vector containing the sequence of moves used to reach the goal position. The following is the sample output:
@@ -56,7 +55,7 @@ The map is drawn with $ being the starting position and X being the goal. The in
 
 ## Todo
 
-* Clean up code, namespaces
+* Clean up code
 * Map files
 
 ## Contributors
