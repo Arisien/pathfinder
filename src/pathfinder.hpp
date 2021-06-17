@@ -1,3 +1,6 @@
+#ifndef PATHFINDER
+#define PATHFINDER
+
 #include <iostream>
 #include <climits>
 #include <cstdlib>
@@ -154,6 +157,8 @@ Path* pathfinder (vector<vector<char>> map, Position start, Position goal) {
 }
 
 vector<vector<char>> generateMap (int height, int width, Position start, Position goal) {
+  srand(time(NULL));
+
   int p = 30;
 
   vector<vector<char>> map = vector<vector<char>>(height);
@@ -170,39 +175,4 @@ vector<vector<char>> generateMap (int height, int width, Position start, Positio
   return map;
 }
 
-
-int main (int argc, char *argv[]) {
-
-  srand(time(NULL));
-
-  Position start, goal;
-
-  if (argc == 5) {
-    start = Position(stoi(argv[1]), stoi(argv[2]));
-    goal = Position(stoi(argv[3]), stoi(argv[4]));
-  }
-  else {
-    start = Position(0, 0);
-    goal = Position(3, 5);
-  }
-
-  vector<vector<char>> map = generateMap(8,8, start, goal);
-
-  // vector<vector<char>> map = {
-  //   {' ', ' ', ' ', ' ', '#', ' '},
-  //   {' ', '#', '#', ' ', '#', ' '},
-  //   {' ', '#', ' ', ' ', ' ', ' '},
-  //   {' ', ' ', ' ', '#', '#', '#'},
-  //   {'#', ' ', '#', ' ', '#', ' '},
-  //   {'#', ' ', ' ', ' ', '#', '#'},
-  //   {' ', '#', ' ', ' ', ' ', ' '},
-  //   {' ', '#', ' ', '#', ' ', ' '},
-  //   {' ', ' ', ' ', ' ', '#', ' '}
-  // };
-
-  Path path = *pathfinder(map, start, goal);
-
-  path.print();
-
-  return 0;
-}
+#endif
