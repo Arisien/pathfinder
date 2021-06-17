@@ -6,18 +6,18 @@ Pathfinder is a C++ program which searches for the ideal path from point A to B 
 
 ## Usage
 
-The path to your goal destination can be found by calling the pathfinder function. Its parameters are the character vector containing the map, the starting position, and the ending position. Positions are simple objects containing public x and y integer properties. The pathfinder will return a pointer to a Path object. The following is a sample use of the pathfinding function:
+The path to your goal destination can be found by calling the pathfinder function. Its parameters are the character vector containing the map, the starting position, and the ending position. Positions are simple objects containing public x and y integer properties. The pathfinder will return a Path object. The following is a sample use of the pathfinding function:
 
 ```cpp
 #include "pathfinder.hpp"
 
+using namespace Pathfinder;
+
 int main (void) {
-  Pathfinder::Position start = Pathfinder::Position(0,0);
-  Pathfinder::Position goal = Pathfinder::Position(5,6);
+  Position start = Position(0,0);
+  Position goal = Position(5,6);
 
-  std::vector<std::vector<char>> map = Pathfinder::generateMap(8,8, start, goal);
-
-  Pathfinder::Path path = *Pathfinder::pathfinder(map, start, goal);
+  Path path = pathfinder(generateMap(8,8, start, goal), start, goal);
 
   path.print();
 
@@ -47,7 +47,7 @@ The map is drawn with $ being the starting position and X being the goal. The in
 
 ## Documentation
 
-* `Path* pathfinder (std::vector<std::vector<char>> map, Position start, Position goal)`
+* `Path pathfinder (std::vector<std::vector<char>> map, Position start, Position goal)`
 
 This is the pathfinding function which requires the map, as well as starting and goal positions. It calls on the recursive pathfind() function to create a depth map of how far away each tile is from the starting position and then backtracks to find the ideal path from start to finish. It will return a Path object containing all relevant data.
 

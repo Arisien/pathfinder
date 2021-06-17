@@ -1,3 +1,12 @@
+/**
+ * pathfinder.hpp
+ *
+ * Arisien
+ * https://github.com/Arisien
+ *
+ * 2D vector pathfinding algorithm.
+ */
+
 #ifndef PATHFINDER
 #define PATHFINDER
 
@@ -105,7 +114,7 @@ namespace Pathfinder {
 
   }
 
-  Path* pathfinder (std::vector<std::vector<char>> map, Position start, Position goal) {
+  Path pathfinder (std::vector<std::vector<char>> map, Position start, Position goal) {
 
     std::vector<std::vector<int>> levels(map.size());
 
@@ -150,10 +159,10 @@ namespace Pathfinder {
 
       distance = temp;
 
-      return new Path(start, goal, moves, levels, possible, distance);
+      return Path(start, goal, moves, levels, possible, distance);
     }
 
-    else return new Path(start, goal, levels, possible, distance);
+    else return Path(start, goal, levels, possible, distance);
   }
 
   std::vector<std::vector<char>> generateMap (int height, int width, Position start, Position goal) {

@@ -1,12 +1,12 @@
 #include "pathfinder.hpp"
 
+using namespace Pathfinder;
+
 int main (void) {
-  Pathfinder::Position start = Pathfinder::Position(0,0);
-  Pathfinder::Position goal = Pathfinder::Position(5,6);
+  Position start = Position(0,0);
+  Position goal = Position(5,6);
 
-  std::vector<std::vector<char>> map = Pathfinder::generateMap(8,8, start, goal);
-
-  Pathfinder::Path path = *Pathfinder::pathfinder(map, start, goal);
+  Path path = pathfinder(generateMap(8,8, start, goal), start, goal);
 
   path.print();
 
